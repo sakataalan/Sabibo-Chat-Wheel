@@ -50,7 +50,6 @@ client.on("messageCreate", async msg => {
     } else if (!msg.author.bot){
         msg.reply("Não entendi, porra, manda de novo.");
     }
-    
 })
 
 client.login(TOKEN);
