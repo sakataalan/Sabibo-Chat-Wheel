@@ -67,15 +67,19 @@ client.on("messageCreate", async msg => {
         }
     } else if (isCommand("tip")) {
 
+        if (msg.mentions.members.size <= 0) {
+            return msg.reply("Não entendi, porra, manda de novo.");
+        }
+
         const authorImage = msg.author.displayAvatarURL({ format: "png" });
         const mentionImage = msg.mentions.members.first().user.displayAvatarURL({ format: 'png' });
         const authorUsername = msg.author.username;
         const mentionUsername = msg.mentions.users.first().username;
-
+        
         if (authorUsername == mentionUsername) {
             return msg.reply("Orra brother, você não pode se tipar");
         }
-
+        
         if (msg.mentions.users.first().bot) {
             return msg.reply("Mano, você tem que tipar alguem que existe, tá na duvida? Tipa o Samuel");
         }
