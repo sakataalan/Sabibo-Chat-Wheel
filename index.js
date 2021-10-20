@@ -82,8 +82,8 @@ client.on("messageCreate", async msg => {
         }
     } else if (isCommand("tip")) {
 
-        if (msg.mentions.members.size <= 0) {
-            return msg.reply("Não entendi, porra, manda de novo.");
+        if (!msg.mentions.members.size) {
+            return msg.reply("Ta tipando o gasparzinho?");
         }
 
         const authorImage = msg.author.displayAvatarURL({ format: "png" });
