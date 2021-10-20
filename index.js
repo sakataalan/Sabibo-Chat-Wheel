@@ -4,9 +4,12 @@ const { Client, Intents, MessageEmbed, MessageAttachment } = require("discord.js
 const voiceDiscord = require("@discordjs/voice");
 const Canvas = require("canvas");
 const fs = require("fs");
+const SQLite = require("better-sqlite3");
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS] });
-const prefix = '#';
+const sql = new SQLite("./scores.sqlite");
+
+const prefix = process.env.PREFIX;
 const TOKEN = process.env.TOKEN;
 
 let textContent = fs.readFileSync('text.txt', 'utf-8');
@@ -14,6 +17,18 @@ let textContentLineByLine = textContent.toString().split("\n");
 
 client.on("ready", () => {
     console.log("ready");
+
+    const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'scores';").get();
+    if (!table['count(*)']) {
+        sql.prepare("CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER);").run();
+
+        sql.prepare("CREATE UNIQUE INDEX idx_scores_id ON scores (id);").run();
+        sql.pragma("synchronous = 1");
+        sql.pragma("journal_mode = wal");
+    }
+
+    client.getScore = sql.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
+    client.setScore = sql.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points) VALUES (@id, @user, @guild, @points);")
 })
 
 client.on("messageCreate", async msg => {
@@ -75,6 +90,7 @@ client.on("messageCreate", async msg => {
         const mentionImage = msg.mentions.members.first().user.displayAvatarURL({ format: 'png' });
         const authorUsername = msg.author.username;
         const mentionUsername = msg.mentions.users.first().username;
+        const mentionID = msg.mentions.users.first().id;
         
         if (authorUsername == mentionUsername) {
             return msg.reply("Orra brother, você não pode se tipar");
@@ -110,6 +126,30 @@ client.on("messageCreate", async msg => {
 
         msg.reply({ files: [attachment] });
 
+        // ------------------------------------------------------------------------------------------------------
+
+        let score = client.getScore.get(mentionID, msg.guild.id);
+
+        if (!score) {
+            score = { 
+                id: `${msg.guild.id}-${mentionID}`,
+                user: mentionID,
+                guild: msg.guild.id,
+                points: 0,
+            }
+        }
+
+        score.points++;
+        client.setScore.run(score);
+
+    } else if(isCommand("saldo")) {
+        let score = client.getScore.get(msg.author.id, msg.guild.id);
+
+        if(!score) {
+            return msg.reply(`Você foi tipado 0 vezes!`);
+        }
+
+        return msg.reply(`Você foi tipado ${score.points} vezes!`);
     } else {
 
         msg.reply("Não entendi, porra, manda de novo.");

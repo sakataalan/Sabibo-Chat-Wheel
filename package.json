@@ -11,11 +11,13 @@
   "license": "ISC",
   "dependencies": {
     "@discordjs/voice": "^0.6.0",
+    "better-sqlite3": "^7.4.3",
     "canvas": "^2.8.0",
     "discord.js": "^13.2.0",
     "dotenv": "^10.0.0",
     "ffmpeg-static": "^4.4.0",
     "libsodium-wrappers": "^0.7.9",
+    "node-gyp": "^8.3.0",
     "opusscript": "^0.0.8"
   }
 }
