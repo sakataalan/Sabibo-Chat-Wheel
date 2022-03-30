@@ -10,14 +10,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@discordjs/voice": "^0.6.0",
-    "better-sqlite3": "^7.4.3",
-    "canvas": "^2.8.0",
-    "discord.js": "^13.2.0",
-    "dotenv": "^10.0.0",
-    "ffmpeg-static": "^4.4.0",
-    "libsodium-wrappers": "^0.7.9",
-    "node-gyp": "^8.3.0",
+    "@discordjs/voice": "^0.8.0",
+    "better-sqlite3": "^7.5.0",
+    "canvas": "^2.9.1",
+    "discord.js": "^13.6.0",
+    "dotenv": "^16.0.0",
+    "ffmpeg-static": "^5.0.0",
+    "libsodium-wrappers": "^0.7.10",
+    "node-gyp": "^9.0.0",
     "opusscript": "^0.0.8"
   }
 }
