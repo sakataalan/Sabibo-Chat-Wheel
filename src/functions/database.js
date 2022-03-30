@@ -1,7 +1,7 @@
 const { Client, Intents } = require("discord.js");
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 const SQLite = require("better-sqlite3");
-const sql = new SQLite("../scores.sqlite");
+const sql = new SQLite("./sql/scores.sqlite");
 
 module.exports = {
     databaseInit(){

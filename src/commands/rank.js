@@ -14,15 +14,11 @@ module.exports = {
             .setColor(0x00AE86);
             
         for (const data of usersAndPoints) { 
-            const user = client.users.cache.get(data.user);
-            if(user && user.tag) {
-                embed.addFields({ 
-                    name: `${position}˚ ` + client.users.cache.get(data.user).tag,
-                    value: `${data.points} tips` 
-                });
-            } else {
-                console.log("deu ruim");
-            }
+            embed.addFields({ 
+                name: `${position}˚ ` + data.username,
+                value: `${data.points} tips` 
+            });
+          
             position++;
         }
         return msg.channel.send({ embeds: [ embed ]});
