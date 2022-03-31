@@ -27,7 +27,7 @@ module.exports = {
             audio.playAudio("tip", msg, channel);
         }
 
-        db.checkAndIncreaseScore(msg, mentionID);
+        db.checkAndIncreaseScore(msg, mentionID, mentionUsername);
         canvas.drawCanvas(msg);
     }
 }
