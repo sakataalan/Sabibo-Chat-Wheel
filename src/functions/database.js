@@ -7,7 +7,7 @@ module.exports = {
     databaseInit(){
         const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'scores';").get();
         if (!table['count(*)']) {
-            sql.prepare("CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER);").run();
+            sql.prepare("CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, username TEXT, points INTEGER);").run();
             sql.prepare("CREATE UNIQUE INDEX idx_scores_id ON scores (id);").run();
 
             sql.pragma("synchronous = 1");
@@ -15,19 +15,23 @@ module.exports = {
         }
 
         client.getScore = sql.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
-        client.setScore = sql.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points) VALUES (@id, @user, @guild, @points);")
+        client.setScore = sql.prepare("INSERT OR REPLACE INTO scores (id, user, guild, username, points) VALUES (@id, @user, @guild, @username, @points);");
     },
 
-    checkAndIncreaseScore(msg, mentionID){
+    checkAndIncreaseScore(msg, mentionID, mentionUsername){
         let score = client.getScore.get(mentionID, msg.guild.id);
 
         if (!score) {
-            score = { 
+            score = {
                 id: `${msg.guild.id}-${mentionID}`,
                 user: mentionID,
                 guild: msg.guild.id,
                 points: 0,
             }
+        }
+
+        if (!score.username) {
+            score.username = mentionUsername;
         }
 
         score.points++;
