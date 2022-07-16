@@ -5,8 +5,10 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_
 
 const prefix = process.env.PREFIX;
 const TOKEN = process.env.TOKEN;
+const CHANNELID = process.env.CHANNELID;
 const fs = require("fs");
 const db = require("./functions/database");
+const { getData } = require("./functions/dota2news");
 
 client.commands = new Collection;
 const commandFiles = fs.readdirSync("./commands/").filter(file => file.endsWith(".js"));
@@ -15,9 +17,19 @@ for(const file of commandFiles) {
     client.commands.set(command.name, command);
 }
 
-client.on("ready", () => {
+client.on("ready", async () => {
     console.log("ready");
+
     db.databaseInit();
+
+    const channelId = await client.channels.fetch(CHANNELID);
+    
+    setInterval(async () => {
+        const data = await getData();
+        if (data != undefined) {
+            channelId.send(data);
+        }
+    }, 1000 * 60 * 10) 
 })
 
 client.on("messageCreate", async msg => {
